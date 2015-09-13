@@ -1,6 +1,16 @@
-frontend-nanodegree-arcade-game
-===============================
+Frogger Game for Udacity's Front-End Nanodegree Course
+======================================================
 
-Students should use this rubric: https://www.udacity.com/course/viewer#!/c-ud015/l-3072058665/m-3072588797
+----------
+Game Rules
+----------
+Once the game starts you must:
+- Avoid all enemies
+- Collect the Star to remove the boulder
+- Move to the Ending point once the boulder has been removed
 
-for self-checking their submission.
+-------------
+Game Controls
+-------------
+- Arrow keys to move the player
+- Space bar will reset the game once you have Won or Lost

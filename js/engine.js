@@ -13,15 +13,16 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-
-var Engine = (function(global) {
+"use strict";
+var Engine = (function (global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
      */
     var doc = global.document,
         win = global.window,
-        canvas = doc.createElement('canvas'),
+        //canvas = doc.createElement('canvas'),
+        canvas = document.querySelector("#c"),
         ctx = canvas.getContext('2d'),
         lastTime;
 
@@ -41,18 +42,22 @@ var Engine = (function(global) {
          */
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
-
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        update(dt);
-        render();
-
+        if (newGame.endGame === false) {
+            update(dt);
+            render();
+        } else if (newGame.endGame === true) {
+            displayTextLose();
+        }
+        if (newGame.winGame === true) {
+            displayTextWin();
+        }
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
         lastTime = now;
-
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
@@ -80,7 +85,37 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
+    }
+    //Text to display if user loses
+    function displayTextLose() {
+        ctx.font = "45px Arial";
+        ctx.lineWidth = 3;
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'black';
+        ctx.strokeText("Game Over", 150, canvas.height / 2);
+        ctx.fillText("Game Over", 150, canvas.height / 2);
+        ctx.font = "30px Arial";
+        ctx.strokeText("Press space to reset", 135, 400);
+        ctx.fillText("Press space to reset", 135, 400);
+    }
+    //Text to display if user wins
+    function displayTextWin() {
+        ctx.font = "45px Arial";
+        ctx.lineWidth = 3;
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'black';
+        ctx.strokeText("You Win!", 180, canvas.height / 2);
+        ctx.fillText("You Win!", 180, canvas.height / 2);
+        ctx.font = "30px Arial";
+        ctx.strokeText("Press space to reset", 135, 400);
+        ctx.fillText("Press space to reset", 135, 400);
+    }
+    //If a collision occurs, end the game
+    function checkCollisions() {
+        if (player.collide() === true) {
+            newGame.endGame = true;
+        }
     }
 
     /* This is called by the update function  and loops through all of the
@@ -91,10 +126,15 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
-            enemy.update(dt);
-        });
-        player.update();
+        if (newGame.endGame === false && newGame.winGame === false) {
+            allEnemies.forEach(function (enemy) {
+                enemy.update(dt);
+            });
+            player.update();
+            obstruction.update();
+            item.update();
+            newGame.update();
+        }
     }
 
     /* This function initially draws the "game level", it will then call
@@ -117,13 +157,19 @@ var Engine = (function(global) {
             ],
             numRows = 6,
             numCols = 5,
-            row, col;
-
+            row,
+            col;
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
          */
-        for (row = 0; row < numRows; row++) {
+        //Adjust the top row, to show an 'exit' via a Selector block
+        ctx.drawImage(Resources.get(rowImages[0]), 0, 0);
+        ctx.drawImage(Resources.get(rowImages[0]), 1 * 101, 0);
+        ctx.drawImage(Resources.get(rowImages[0]), 2 * 101, 0);
+        ctx.drawImage(Resources.get('images/Selector.png'), 3 * 101, -40);
+        ctx.drawImage(Resources.get(rowImages[0]), 4 * 101, 0);
+        for (row = 1; row < numRows; row++) {
             for (col = 0; col < numCols; col++) {
                 /* The drawImage function of the canvas' context element
                  * requires 3 parameters: the image to draw, the x coordinate
@@ -135,8 +181,6 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-
-
         renderEntities();
     }
 
@@ -148,11 +192,13 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(enemy) {
+        allEnemies.forEach(function (enemy) {
             enemy.render();
         });
-
+        //Render player, item and obstruction entities
         player.render();
+        item.render();
+        obstruction.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -171,8 +217,13 @@ var Engine = (function(global) {
         'images/stone-block.png',
         'images/water-block.png',
         'images/grass-block.png',
-        'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/enemy-bug-right.png',
+        'images/enemy-bug-left.png',
+        'images/char-boy.png',
+        'images/char-horn-girl.png',
+        'images/Star.png',
+        'images/Selector.png',
+        'images/Rock.png'
     ]);
     Resources.onReady(init);
 
