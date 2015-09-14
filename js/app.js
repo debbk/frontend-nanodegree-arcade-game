@@ -69,7 +69,7 @@ Item.prototype.update = function () {
 
 //If player touches item, remove item
 Item.prototype.statusCheck = function () {
-    if (item.collide() === true) {
+    if (this.collide() === true) {
         this.loc = 'remove';
     }
 };
@@ -146,7 +146,7 @@ Enemy.prototype.update = function (dt) {
 //Assign a direction to the enemies depending on their x location
 //also assign an image to the enemy depending on their movement direction
 Enemy.prototype.location = function (dt) {
-    if (this.y<70 && obstruction.barrier() === true){
+    if (this.y < 70 && obstruction.barrier() === true){
         if(this.x > 200) {
             this.direction = "left";
         } else if (this.x < BOUNDX_LEFT){
@@ -194,7 +194,7 @@ for (var i = 0; i < 3; i++) {
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    allEnemies.push(new Enemy(-50,60+82*i, enemySpeed));
+    allEnemies.push(new Enemy(-50, 60 + 82 * i, enemySpeed));
 }
 
 /**************** Player Code ****************/
@@ -207,9 +207,6 @@ var Player = function () {
 
 //Update player's position
 Player.prototype.update = function (dt) {
-    //this.x += this.speed*dt;
-    //use same dt parameter as enemy
-    //ensure that game runs at same speed across various computers
 };
 
 //Draw the player on the screen if game is not over
