@@ -1,28 +1,28 @@
 /** Declare variables **/
 "use strict";
 //Map boundaries
-var boundyTop = -50;
-var boundyBottom = 450;
-var boundxRight = 410;
-var boundxLeft = 0;
+var BOUNDY_TOP = -50;
+var BOUNDY_BOTTOM = 450;
+var BOUNDX_RIGHT = 410;
+var BOUNDX_LEFT = 0;
 //Player starting position
-var playerX = 205;  //canvas width is 505
-var playerY = 400;  //canvas height is 606
+var PLAYER_X = 205;  //canvas width is 505
+var PLAYER_Y = 400;  //canvas height is 606
 //Movement distances
-var horizontal = 100;
-var vertical = 85;
-var enemyWidth = 60;
-var enemyHeight = 30;
+var HORIZONTAL = 100;
+var VERTICAL = 85;
+var ENEMY_WIDTH = 60;
+var ENEMY_HEIGHT = 30;
 //Item dimensions
-var itemX = 3;
-var itemY = 67;
-var itemWidth = 10;
-var itemHeight = 10;
+var ITEM_X = 3;
+var ITEM_Y = 67;
+var ITEM_WIDTH = 10;
+var ITEM_HEIGHT = 10;
 //Game obstacles
-var obstructX = 305;
-var obstructY = 60;
-var obstructWidth = 100;
-var obstructHeight = 60;
+var OBSTRUCT_X = 305;
+var OBSTRUCT_Y = 60;
+var OBSTRUCT_WIDTH = 100;
+var OBSTRUCT_HEIGHT = 60;
 
 /**************** Game Status Code ****************/
 var Game = function () {
@@ -49,8 +49,8 @@ var newGame = new Game();
 /**************** Item Code ****************/
 var Item = function () {
     this.item = true;
-    this.x = itemX;
-    this.y = itemY;
+    this.x = ITEM_X;
+    this.y = ITEM_Y;
     this.sprite = 'images/Star.png';
     this.loc = "present";
 };
@@ -76,7 +76,7 @@ Item.prototype.statusCheck = function () {
 
 //Check for collisions with items
 Item.prototype.collide = function () {
-    if (this.x <player.x + itemWidth && this.x > player.x - itemWidth && this.y < player.y + itemHeight && this.y >player.y - itemHeight) {
+    if (this.x <player.x + ITEM_WIDTH && this.x > player.x - ITEM_WIDTH && this.y < player.y + ITEM_HEIGHT && this.y >player.y - ITEM_HEIGHT) {
         return true;
     }
 };
@@ -86,8 +86,8 @@ var item = new Item();
 
 /**************** Obstruction Code ****************/
 var Obstruction = function () {
-    this.x = obstructX;
-    this.y = obstructY;
+    this.x = OBSTRUCT_X;
+    this.y = OBSTRUCT_Y;
     this.sprite = 'images/Rock.png';
     this.loc = 'present';
 };
@@ -149,13 +149,13 @@ Enemy.prototype.location = function (dt) {
     if (this.y<70 && obstruction.barrier() === true){
         if(this.x > 200) {
             this.direction = "left";
-        } else if (this.x < boundxLeft){
+        } else if (this.x < BOUNDX_LEFT){
             this.direction = "right";
         }
     }
-    if (this.x > boundxRight) {
+    if (this.x > BOUNDX_RIGHT) {
         this.direction = "left";
-    } else if (this.x < boundxLeft){
+    } else if (this.x < BOUNDX_LEFT){
         this.direction = "right";
     }
 };
@@ -200,8 +200,8 @@ for (var i = 0; i < 3; i++) {
 /**************** Player Code ****************/
 //Create player class
 var Player = function () {
-    this.x = playerX;
-    this.y = playerY;
+    this.x = PLAYER_X;
+    this.y = PLAYER_Y;
     this.sprite = "images/char-horn-girl.png";
 };
 
@@ -228,56 +228,56 @@ if (newGame.endGame === false && newGame.winGame === false) {
         case "left":
             //*Barrier Present
             //Stop from waking into barrier if barrier is present
-            if (obstruction.barrier() === true && this.x === (obstructX + obstructWidth) && this.y === obstructY) {
+            if (obstruction.barrier() === true && this.x === (OBSTRUCT_X + OBSTRUCT_WIDTH) && this.y === OBSTRUCT_Y) {
             //Stay in bounds of screen
-            } else if (obstruction.barrier() === true && this.x - horizontal > boundxLeft && (this.y !== obstructY || this.x !== (obstructX + obstructWidth))) {
-                this.x -= horizontal;
+            } else if (obstruction.barrier() === true && this.x - HORIZONTAL > BOUNDX_LEFT && (this.y !== OBSTRUCT_Y || this.x !== (OBSTRUCT_X + OBSTRUCT_WIDTH))) {
+                this.x -= HORIZONTAL;
             //*Barrier not present
             //Stay in map bounds
-            } else if (obstruction.barrier() === false && this.x - horizontal < boundxLeft) {
+            } else if (obstruction.barrier() === false && this.x - HORIZONTAL < BOUNDX_LEFT) {
             //Do not walk into water
-            } else if (obstruction.barrier() === false && this.x === obstructX && this.y < obstructY) {
-            } else if (obstruction.barrier() === false && this.x - horizontal > boundxLeft) {
-                this.x -= horizontal;
+            } else if (obstruction.barrier() === false && this.x === OBSTRUCT_X && this.y < OBSTRUCT_Y) {
+            } else if (obstruction.barrier() === false && this.x - HORIZONTAL > BOUNDX_LEFT) {
+                this.x -= HORIZONTAL;
             }
             break;
         case "right":
             //*Barrier Present//
             //Stay in map bounds
-            if (obstruction.barrier() === true && this.x + horizontal > boundxRight) {
+            if (obstruction.barrier() === true && this.x + HORIZONTAL > BOUNDX_RIGHT) {
             //Do not walk into barrier
-            } else if (obstruction.barrier() === true && this.x === (obstructX - obstructWidth) && this.y === obstructY) {
+            } else if (obstruction.barrier() === true && this.x === (OBSTRUCT_X - OBSTRUCT_WIDTH) && this.y === OBSTRUCT_Y) {
             //Allow movement if barrier not in the way
-            } else if (obstruction.barrier() === true && (this.x !== (obstructX - obstructWidth) || this.y !== obstructY)) {
-                this.x += horizontal;
+            } else if (obstruction.barrier() === true && (this.x !== (OBSTRUCT_X - OBSTRUCT_WIDTH) || this.y !== OBSTRUCT_Y)) {
+                this.x += HORIZONTAL;
             //*Barrier Removed//
             //Stay in map bounds
-            } else if (obstruction.barrier() === false && this.x + horizontal > boundxRight) {
+            } else if (obstruction.barrier() === false && this.x + HORIZONTAL > BOUNDX_RIGHT) {
             //Do not walk in water
-            } else if (obstruction.barrier() === false && this.x + horizontal > (obstructX - obstructWidth) && this.y < obstructY) {
-            } else if (obstruction.barrier() === false && this.x + horizontal < boundxRight) {
-                this.x += horizontal;
+            } else if (obstruction.barrier() === false && this.x + HORIZONTAL > (OBSTRUCT_X - OBSTRUCT_WIDTH) && this.y < OBSTRUCT_Y) {
+            } else if (obstruction.barrier() === false && this.x + HORIZONTAL < BOUNDX_RIGHT) {
+                this.x += HORIZONTAL;
             }
             break;
         case "up":
             //*Barrier Present//
             //Stop from walking into barrier if barrier is present
-            if (this.x === (obstructX) && obstruction.barrier() === true && this.y - vertical < (obstructY + obstructHeight)) {
-            } else if (this.x === (obstructX) && obstruction.barrier() === true && this.y.vertical > (obstructY + obstructHeight) && this.y - vertical < boundyTop) {
+            if (this.x === (OBSTRUCT_X) && obstruction.barrier() === true && this.y - VERTICAL < (OBSTRUCT_Y + OBSTRUCT_HEIGHT)) {
+            } else if (this.x === (OBSTRUCT_X) && obstruction.barrier() === true && this.y.VERTICAL > (OBSTRUCT_Y + OBSTRUCT_HEIGHT) && this.y - VERTICAL < BOUNDY_TOP) {
             //prevent player from walking into water
-            } else if (this.x !== (obstructX) && obstruction.barrier() === true && this.y - vertical < obstructY) {
+            } else if (this.x !== (OBSTRUCT_X) && obstruction.barrier() === true && this.y - VERTICAL < OBSTRUCT_Y) {
             //***Barrier Removed//
             //Allow player to walk upwards if barrier is removed
-            } else if (this.x === (obstructX) && obstruction.barrier() === false && this.y - vertical < boundyTop) {
-            } else if (this.x !== (obstructX) && obstruction.barrier() === false && this.y - vertical < obstructY) {
+            } else if (this.x === (OBSTRUCT_X) && obstruction.barrier() === false && this.y - VERTICAL < BOUNDY_TOP) {
+            } else if (this.x !== (OBSTRUCT_X) && obstruction.barrier() === false && this.y - VERTICAL < OBSTRUCT_Y) {
             } else {
-                this.y -= vertical;
+                this.y -= VERTICAL;
             }
             break;
         case "down":
-            if (this.y + vertical > boundyBottom) {
+            if (this.y + VERTICAL > BOUNDY_BOTTOM) {
             } else {
-                this.y += vertical;
+                this.y += VERTICAL;
             }
             break;
         case "space":
@@ -298,8 +298,8 @@ if (newGame.endGame === false && newGame.winGame === false) {
 
 //Reset player position and game status
 Player.prototype.reset = function () {
-    this.x = playerX;
-    this.y = playerY;
+    this.x = PLAYER_X;
+    this.y = PLAYER_Y;
     newGame.endGame = false;
     newGame.winGame = false;
 };
@@ -307,7 +307,7 @@ Player.prototype.reset = function () {
 //*******  Check for collisions
 Player.prototype.collide = function () {
     for(var i = 0; i < allEnemies.length; i++) {
-        if (this.x < allEnemies[i].x + enemyWidth && this.x > allEnemies[i].x - enemyWidth && this.y < allEnemies[i].y + enemyHeight && this.y > allEnemies[i].y - enemyHeight) {
+        if (this.x < allEnemies[i].x + ENEMY_WIDTH && this.x > allEnemies[i].x - ENEMY_WIDTH && this.y < allEnemies[i].y + ENEMY_HEIGHT && this.y > allEnemies[i].y - ENEMY_HEIGHT) {
             return true;
         }
     }
